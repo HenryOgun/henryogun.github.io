@@ -1,0 +1,10 @@
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "com.diamondfm.salestrack",
+    "sha256_cert_fingerprints": [
+      "2A:5A:53:5B:D0:FB:B8:54:A3:2D:2B:46:D8:85:22:EC:F4:87:FA:ED:52:0E:3F:B2:1C:BD:AA:6D:06:62:8F:95"
+    ]
+  }
+}]
