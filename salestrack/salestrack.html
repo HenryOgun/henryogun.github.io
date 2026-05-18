@@ -668,20 +668,8 @@
       <div class="feed-title">Live Feed</div>
       <div class="feed-live"><span class="live-dot"></span>Live</div>
     </div>
-    <!-- Daily summary -->
-    <div onclick="toggleAdmSection('daily-summary','feed-summary-toggle')" style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px 0;cursor:pointer;user-select:none">
-      <div style="font-size:13px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">Daily Summary</div>
-      <span id="feed-summary-toggle" style="font-size:22px;font-weight:900;color:#fff;line-height:1;width:38px;height:38px;display:flex;align-items:center;justify-content:center;background:var(--accent);border-radius:10px;flex-shrink:0">+</span>
-    </div>
-    <div id="daily-summary" style="display:none"></div>
     <!-- Renewal alerts -->
     <div id="renewal-alerts"></div>
-    <!-- Announcements -->
-    <div onclick="toggleAdmSection('announcements-list','feed-announce-toggle')" style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px 0;cursor:pointer;user-select:none">
-      <div style="font-size:13px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">Announcements</div>
-      <span id="feed-announce-toggle" style="font-size:22px;font-weight:900;color:#fff;line-height:1;width:38px;height:38px;display:flex;align-items:center;justify-content:center;background:var(--accent);border-radius:10px;flex-shrink:0">+</span>
-    </div>
-    <div id="announcements-list" style="display:none"></div>
     <!-- Search -->
     <div class="feed-search-wrap">
       <input class="feed-search" id="feed-search" type="text" placeholder="&#128269; Search client, brand, ad type..." oninput="renderFeed()">
@@ -695,6 +683,18 @@
       <button class="filter-chip"        data-filter="overdue"    onclick="setFeedFilter('overdue',this)">Overdue</button>
     </div>
     <div id="feed-list"></div>
+    <!-- Daily summary -->
+    <div onclick="toggleAdmSection('daily-summary','feed-summary-toggle')" style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px 0;cursor:pointer;user-select:none">
+      <div style="font-size:13px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">Daily Summary</div>
+      <span id="feed-summary-toggle" style="font-size:22px;font-weight:900;color:#fff;line-height:1;width:38px;height:38px;display:flex;align-items:center;justify-content:center;background:var(--accent);border-radius:10px;flex-shrink:0">+</span>
+    </div>
+    <div id="daily-summary" style="display:none"></div>
+    <!-- Announcements -->
+    <div onclick="toggleAdmSection('announcements-list','feed-announce-toggle')" style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px 0;cursor:pointer;user-select:none">
+      <div style="font-size:13px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">Announcements</div>
+      <span id="feed-announce-toggle" style="font-size:22px;font-weight:900;color:#fff;line-height:1;width:38px;height:38px;display:flex;align-items:center;justify-content:center;background:var(--accent);border-radius:10px;flex-shrink:0">+</span>
+    </div>
+    <div id="announcements-list" style="display:none"></div>
   </div>
 
   <!-- DASHBOARD -->
