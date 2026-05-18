@@ -982,6 +982,20 @@
       <div style="font-size:13px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">All Transactions</div>
       <div id="adm-tx-list" style="display:flex;flex-direction:column;gap:10px"></div>
     </div>
+    <!-- Ad Activity Log -->
+    <div style="padding:14px 16px 0">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <div style="font-size:13px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">&#128203; Advert Activity Log</div>
+        <div style="display:flex;gap:6px">
+          <button onclick="filterAdLog('all')" id="adlog-btn-all" style="padding:5px 10px;font-size:11px;font-weight:700;border:none;border-radius:8px;cursor:pointer;background:var(--accent);color:#fff">All</button>
+          <button onclick="filterAdLog('logged')" id="adlog-btn-logged" style="padding:5px 10px;font-size:11px;font-weight:700;border:none;border-radius:8px;cursor:pointer;background:var(--card);color:var(--muted)">Logged</button>
+          <button onclick="filterAdLog('edited')" id="adlog-btn-edited" style="padding:5px 10px;font-size:11px;font-weight:700;border:none;border-radius:8px;cursor:pointer;background:var(--card);color:var(--muted)">Edited</button>
+        </div>
+      </div>
+      <div id="adm-adlog-list" style="display:flex;flex-direction:column;gap:8px">
+        <div style="color:var(--muted);font-size:13px;padding:8px 0">Loading log...</div>
+      </div>
+    </div>
     <div style="height:100px"></div>
   </div>
 
@@ -1123,6 +1137,7 @@ function firebaseReady() { return db !== null; }
 
 let currentUser = null, sales = [], selectedMemberId = null;
 let channel = null, newSaleTimer = null, toastTimer = null;
+let adLogEntries = [], adLogFilter = 'all';
 
 const DEVICE_KEY = 'salestrack_device';
 
@@ -1459,7 +1474,7 @@ function showTab(name) {
   if (name === 'feed')  { renderFeed(); clearNotifyDot(); }
   if (name === 'dash')  renderDash();
   if (name === 'team')  renderTeam();
-  if (name === 'admin') renderAdmin();
+  if (name === 'admin') { renderAdmin(); renderAdLog(); }
   if (name === 'reports') renderReports();
 }
 
@@ -1940,6 +1955,7 @@ function saveEdit() {
   if (!editingId) return;
   var idx = sales.findIndex(function(x){return x.id===editingId;});
   if (idx === -1) { toast('Sale not found'); return; }
+  var oldSale = Object.assign({}, sales[idx]);
   var client = document.getElementById('e-client').value.trim();
   var amount = parseFloat(document.getElementById('e-amount').value);
   var slots  = parseInt(document.getElementById('e-slots').value);
@@ -1964,6 +1980,7 @@ function saveEdit() {
   });
   saveSales();
   broadcast('NEW_SALE', { sale: sales[idx] });
+  writeAdLog('edited', sales[idx], oldSale);
   closeEdit();
   refreshAll();
   toast('Sale updated!');
@@ -2069,6 +2086,7 @@ function submitSale() {
     ts: Date.now(), isNew: true
   };
   sales.unshift(sale); saveSales(); broadcast('NEW_SALE', { sale });
+  writeAdLog('logged', sale);
   ['f-client','f-product','f-notes','f-agency'].forEach(id => document.getElementById(id).value = '');
   ['f-package','f-duration','f-payment'].forEach(id => document.getElementById(id).value = '');
   document.getElementById('f-amount').value = '';
@@ -2672,6 +2690,93 @@ function setRptPerson(person, btn) {
 
 // ── Firebase extras listener ──────────────────────────────────
 let extrasListenerSetup = false;
+// ── Advert Activity Log ───────────────────────────────────────
+function writeAdLog(type, sale, oldSale) {
+  if (!firebaseReady()) return;
+  const entry = {
+    id: Date.now().toString(36) + Math.random().toString(36).slice(2,5),
+    type: type,
+    by: currentUser.id,
+    ts: Date.now(),
+    saleId: sale.id,
+    client: sale.client,
+    product: sale.product || '',
+    pkg: sale.pkg || '',
+    amount: sale.amount,
+    payment: sale.payment,
+    slots: sale.slots
+  };
+  if (type === 'edited' && oldSale) {
+    const fields = ['client','product','pkg','duration','slots','startDate','endDate','amount','payment','agency','renewal','notes'];
+    const changes = {};
+    fields.forEach(function(f) {
+      if (String(oldSale[f]||'') !== String(sale[f]||'')) {
+        changes[f] = { from: oldSale[f]||'', to: sale[f]||'' };
+      }
+    });
+    entry.changes = changes;
+  }
+  db.ref('adLog/' + entry.id).set(entry).catch(function(e){ console.warn('adLog write error', e); });
+}
+
+function filterAdLog(type) {
+  adLogFilter = type;
+  ['all','logged','edited'].forEach(function(t) {
+    var btn = document.getElementById('adlog-btn-' + t);
+    if (!btn) return;
+    btn.style.background = t === type ? 'var(--accent)' : 'var(--card)';
+    btn.style.color = t === type ? '#fff' : 'var(--muted)';
+  });
+  renderAdLog();
+}
+
+function renderAdLog() {
+  var el = document.getElementById('adm-adlog-list');
+  if (!el) return;
+  var entries = adLogFilter === 'all' ? adLogEntries : adLogEntries.filter(function(e){ return e.type === adLogFilter; });
+  if (!entries.length) {
+    el.innerHTML = '<div style="color:var(--muted);font-size:13px;padding:8px 0">No activity logged yet</div>';
+    return;
+  }
+  el.innerHTML = entries.map(function(e) {
+    var member = TEAM.find(function(m){ return m.id === e.by; });
+    var mName  = member ? member.emoji + ' ' + member.name : e.by;
+    var mColor = member ? member.color : 'var(--accent)';
+    var isEdit = e.type === 'edited';
+    var badge  = isEdit
+      ? '<span style="background:#f39c1222;color:#f39c12;font-size:10px;font-weight:700;padding:2px 7px;border-radius:6px;letter-spacing:.3px">EDITED</span>'
+      : '<span style="background:#2ecc7122;color:#2ecc71;font-size:10px;font-weight:700;padding:2px 7px;border-radius:6px;letter-spacing:.3px">LOGGED</span>';
+    var changesHtml = '';
+    if (isEdit && e.changes) {
+      var labels = { client:'Client', product:'Product', pkg:'Ad Type', duration:'Duration', slots:'Slots', startDate:'Start', endDate:'End', amount:'Amount', payment:'Payment', agency:'Agency', renewal:'Renewal', notes:'Notes' };
+      var rows = Object.keys(e.changes).map(function(f) {
+        var c = e.changes[f];
+        var from = f === 'amount' ? '&#8358;' + fmtMoney(Number(c.from)||0) : esc(String(c.from));
+        var to   = f === 'amount' ? '&#8358;' + fmtMoney(Number(c.to)||0)   : esc(String(c.to));
+        return '<div style="display:flex;gap:6px;align-items:center;font-size:11px;color:var(--muted);padding:2px 0">'
+          + '<span style="color:var(--text);font-weight:600;min-width:56px">' + (labels[f]||f) + ':</span>'
+          + '<span style="color:#e74c3c;text-decoration:line-through">' + from + '</span>'
+          + '<span style="color:var(--muted)">&#8594;</span>'
+          + '<span style="color:#2ecc71">' + to + '</span>'
+          + '</div>';
+      }).join('');
+      if (rows) changesHtml = '<div style="margin-top:6px;padding:6px 8px;background:var(--card2,var(--card));border-radius:8px;border:1px solid var(--border)">' + rows + '</div>';
+    }
+    return '<div style="background:var(--card);border-radius:14px;border:1px solid var(--border);padding:12px 14px">'
+      + '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">'
+      +   '<div style="font-size:12px;font-weight:700;color:' + mColor + '">' + mName + '</div>'
+      +   badge
+      + '</div>'
+      + '<div style="font-size:13px;font-weight:700;color:var(--text)">' + esc(e.client) + (e.product ? ' &bull; ' + esc(e.product) : '') + '</div>'
+      + '<div style="font-size:12px;color:var(--muted);margin-top:2px">'
+      +   esc(e.pkg) + ' &nbsp;|&nbsp; &#8358;' + fmtMoney(e.amount) + ' &nbsp;|&nbsp; ' + e.slots + ' slot' + (e.slots !== 1 ? 's' : '') + ' &nbsp;|&nbsp; ' + (e.payment||'')
+      + '</div>'
+      + changesHtml
+      + '<div style="font-size:11px;color:var(--muted);margin-top:6px">' + relTime(e.ts) + '</div>'
+      + '</div>';
+  }).join('');
+}
+
 function setupExtrasListener() {
   if (!firebaseReady() || extrasListenerSetup) return;
   extrasListenerSetup = true;
@@ -2683,6 +2788,11 @@ function setupExtrasListener() {
   });
   db.ref('salesComments').on('value', snap => {
     salesComments = snap.val() || {};
+  });
+  db.ref('adLog').on('value', snap => {
+    const data = snap.val();
+    adLogEntries = data ? Object.values(data).sort((a,b) => b.ts - a.ts) : [];
+    renderAdLog();
   });
   db.ref('teamMembers').on('value', snap => {
     const data = snap.val() || {};
