@@ -2072,18 +2072,20 @@ function renderAdmin() {
     const seller = TEAM.find(m=>m.id===s.sellerId)||{name:'Unknown',emoji:'?',color:'#888'};
     const d = new Date(s.ts);
     const timeStr = d.toLocaleDateString('en-NG',{day:'numeric',month:'short'})+' '+d.toLocaleTimeString('en-NG',{hour:'2-digit',minute:'2-digit'});
-    return `<div style="background:var(--card);border-radius:14px;padding:12px 14px;border-left:4px solid ${seller.color};border-top:1px solid var(--border);border-right:1px solid var(--border);border-bottom:1px solid var(--border)">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
-        <span style="font-size:16px">${seller.emoji}</span>
-        <span style="font-weight:700;font-size:13px;color:var(--text)">${seller.name}</span>
-        <span style="margin-left:auto;font-size:11px;color:var(--muted)">${timeStr}</span>
-      </div>
-      <div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:6px">${esc(s.client)}${s.product?' &bull; '+esc(s.product):''}</div>
-      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:12px">
-        <span style="color:${seller.color};font-weight:700">₦${fmtMoney(s.amount)}</span>
-        <span style="color:var(--muted)">${s.slots} slot${s.slots!==1?'s':''}</span>
-        <span style="color:var(--muted)">${s.slots>0?'&#8358;'+fmtMoney(Math.round(s.amount/s.slots))+'/slot':''}</span>
-        <span style="color:var(--muted)">${s.payment||'Cash'}</span>
+    return `<div style="background:var(--card);border-radius:10px;padding:7px 10px;border-left:3px solid ${seller.color};border-top:1px solid var(--border);border-right:1px solid var(--border);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px">
+      <span style="font-size:13px;flex-shrink:0">${seller.emoji}</span>
+      <div style="flex:1;min-width:0">
+        <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+          <span style="font-size:12px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:110px">${esc(s.client)}</span>
+          <span style="font-size:11px;color:var(--muted)">${esc(s.pkg||'')}</span>
+          <span style="font-size:11px;color:var(--muted);margin-left:auto;white-space:nowrap">${timeStr}</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;margin-top:2px;font-size:11px">
+          <span style="color:${seller.color};font-weight:700">&#8358;${fmtMoney(s.amount)}</span>
+          <span style="color:var(--muted)">${s.slots} slot${s.slots!==1?'s':''}</span>
+          ${s.slots>0?`<span style="color:var(--muted)">&#8358;${fmtMoney(Math.round(s.amount/s.slots))}/slot</span>`:''}
+          <span style="color:var(--muted)">${s.payment||'Cash'}</span>
+        </div>
       </div>
     </div>`;
   }).join('');
