@@ -986,8 +986,11 @@
       <div id="adm-announce-list" style="margin-top:12px"></div>
     </div>
     <div style="padding:14px 16px 0">
-      <div style="font-size:13px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">All Transactions</div>
-      <div id="adm-tx-list" style="display:flex;flex-direction:column;gap:10px"></div>
+      <div onclick="toggleAdmTx()" style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none">
+        <div style="font-size:13px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">All Transactions</div>
+        <span id="adm-tx-toggle" style="font-size:18px;font-weight:700;color:var(--muted);line-height:1;width:28px;height:28px;display:flex;align-items:center;justify-content:center;background:var(--card);border:1px solid var(--border);border-radius:8px">+</span>
+      </div>
+      <div id="adm-tx-list" style="display:none;flex-direction:column;gap:10px;margin-top:10px"></div>
     </div>
     <!-- Ad Activity Log -->
     <div style="padding:14px 16px 0">
@@ -2061,6 +2064,13 @@ function renderAdmin() {
   }).join('');
 }
 function switchToFeed() { showTab('feed'); }
+function toggleAdmTx() {
+  var list   = document.getElementById('adm-tx-list');
+  var toggle = document.getElementById('adm-tx-toggle');
+  var open   = list.style.display === 'none' || list.style.display === '';
+  list.style.display  = open ? 'flex' : 'none';
+  toggle.textContent  = open ? '−' : '+';
+}
 
 let selectedRenewal = '';
 function setRenewal(val) {
