@@ -1602,7 +1602,7 @@ function exportCSV(period) {
   }
   if (!filtered.length) { toast('No records for this period'); return; }
   var label = period==='day'?'Daily':period==='week'?'Weekly':period==='month'?'Monthly':period==='year'?'Yearly':'All';
-  var headers = ['#','Date','Time','Logged By','Client','Product/Brand','Ad Type','Duration','Slots','Start Date','End Date','Amount (NGN)','Payment Type','Agency','Renewal','Notes'];
+  var headers = ['#','Date','Time','Logged By','Client','Product/Brand','Ad Type','Duration','Slots','Start Date','End Date','Amount (NGN)','Rate/Slot (NGN)','Payment Type','Agency','Renewal','Notes'];
   var sorted = filtered.sort(function(a,b){return a.ts-b.ts;});
   var rows = sorted.map(function(s,i) {
     var seller = TEAM.find(function(m){return m.id===s.sellerId;})||{name:'Unknown'};
@@ -1621,7 +1621,7 @@ function exportCSV(period) {
       i+1, q(dateStr), q(timeStr), q(seller.name),
       q(s.client||''), q(s.product||''), q(s.pkg||''), q(s.duration||''),
       q(s.slots||0), q(fmtD(s.startDate)), q(fmtD(s.endDate)),
-      q(s.amount||0), q(s.payment||'Cash'), q(s.agency||''),
+      q(s.amount||0), q(s.slots>0?Math.round((s.amount||0)/s.slots):0), q(s.payment||'Cash'), q(s.agency||''),
       q(renewalText), q(s.notes||'')
     ].join(',');
   });
@@ -1745,6 +1745,7 @@ function printInvoice(id) {
     ['Slots',    s.slots],
     ['Period',   fd(s.startDate)+' \u2013 '+fd(s.endDate)],
     ['Amount',   '\u20A6'+(s.amount||0).toLocaleString()],
+    ['Rate/Slot', s.slots>0 ? '\u20A6'+Math.round((s.amount||0)/s.slots).toLocaleString()+' per slot' : '\u2014'],
     ['Payment',  s.payment||'Cash'],
     s.agency  ? ['Agency', s.agency] : null,
     ['Logged By', m.name],
@@ -2046,6 +2047,7 @@ function renderAdmin() {
       <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:12px">
         <span style="color:${seller.color};font-weight:700">₦${fmtMoney(s.amount)}</span>
         <span style="color:var(--muted)">${s.slots} slot${s.slots!==1?'s':''}</span>
+        <span style="color:var(--muted)">${s.slots>0?'&#8358;'+fmtMoney(Math.round(s.amount/s.slots))+'/slot':''}</span>
         <span style="color:var(--muted)">${s.payment||'Cash'}</span>
       </div>
     </div>`;
@@ -2169,7 +2171,7 @@ function buildSaleCard(s) {
       <div style="flex:1;min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font-size:13px;font-weight:700;color:var(--text)">${line1}</div>
       <div style="flex-shrink:0;text-align:right">
         <div style="font-size:13px;font-weight:800;color:var(--green)">&#8358;${fmtMoney(s.amount)}</div>
-        <div style="font-size:10px;color:var(--muted)">${relTime(s.ts)}</div>
+        <div style="font-size:10px;color:var(--muted)">${s.slots>0?'&#8358;'+fmtMoney(Math.round(s.amount/s.slots))+'/slot':''}&nbsp;${relTime(s.ts)}</div>
       </div>
     </div>
     <!-- row 2: details · action strip -->
