@@ -669,11 +669,23 @@
       <div class="feed-live"><span class="live-dot"></span>Live</div>
     </div>
     <!-- Daily summary -->
-    <div id="daily-summary"></div>
+    <div onclick="toggleAdmSection('daily-summary','feed-summary-toggle')" style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px 0;cursor:pointer;user-select:none">
+      <div style="font-size:13px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">Daily Summary</div>
+      <span id="feed-summary-toggle" style="font-size:22px;font-weight:900;color:#fff;line-height:1;width:38px;height:38px;display:flex;align-items:center;justify-content:center;background:var(--accent);border-radius:10px;flex-shrink:0">+</span>
+    </div>
+    <div id="daily-summary" style="display:none"></div>
     <!-- Renewal alerts -->
-    <div id="renewal-alerts"></div>
+    <div onclick="toggleAdmSection('renewal-alerts','feed-renewals-toggle')" style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px 0;cursor:pointer;user-select:none">
+      <div style="font-size:13px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">Renewal Alerts</div>
+      <span id="feed-renewals-toggle" style="font-size:22px;font-weight:900;color:#fff;line-height:1;width:38px;height:38px;display:flex;align-items:center;justify-content:center;background:var(--accent);border-radius:10px;flex-shrink:0">+</span>
+    </div>
+    <div id="renewal-alerts" style="display:none"></div>
     <!-- Announcements -->
-    <div id="announcements-list"></div>
+    <div onclick="toggleAdmSection('announcements-list','feed-announce-toggle')" style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px 0;cursor:pointer;user-select:none">
+      <div style="font-size:13px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">Announcements</div>
+      <span id="feed-announce-toggle" style="font-size:22px;font-weight:900;color:#fff;line-height:1;width:38px;height:38px;display:flex;align-items:center;justify-content:center;background:var(--accent);border-radius:10px;flex-shrink:0">+</span>
+    </div>
+    <div id="announcements-list" style="display:none"></div>
     <!-- Search -->
     <div class="feed-search-wrap">
       <input class="feed-search" id="feed-search" type="text" placeholder="&#128269; Search client, brand, ad type..." oninput="renderFeed()">
@@ -714,8 +726,13 @@
     </div>
 
 
-    <div class="section-title">Leaderboard</div>
-    <div class="leader-list" id="leader-list"></div>
+    <div onclick="toggleAdmSection('dash-leader-body','dash-leader-toggle')" style="display:flex;align-items:center;justify-content:space-between;padding:0 14px;cursor:pointer;user-select:none">
+      <div class="section-title" style="padding:0">Leaderboard</div>
+      <span id="dash-leader-toggle" style="font-size:22px;font-weight:900;color:#fff;line-height:1;width:38px;height:38px;display:flex;align-items:center;justify-content:center;background:var(--accent);border-radius:10px;flex-shrink:0">+</span>
+    </div>
+    <div id="dash-leader-body" style="display:none">
+      <div class="leader-list" id="leader-list"></div>
+    </div>
   </div>
 
   <!-- LOG SALE -->
@@ -838,7 +855,11 @@
   <div class="page" id="page-team">
     <div class="team-header">The Team</div>
     <div class="team-sub">3 members &middot; Live stats</div>
-    <div class="team-cards" id="team-cards"></div>
+    <div onclick="toggleAdmSection('team-cards','team-cards-toggle')" style="display:flex;align-items:center;justify-content:space-between;padding:0 14px 10px;cursor:pointer;user-select:none">
+      <div style="font-size:13px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">Members</div>
+      <span id="team-cards-toggle" style="font-size:22px;font-weight:900;color:#fff;line-height:1;width:38px;height:38px;display:flex;align-items:center;justify-content:center;background:var(--accent);border-radius:10px;flex-shrink:0">+</span>
+    </div>
+    <div class="team-cards" id="team-cards" style="display:none"></div>
   </div>
 
   <!-- REPORTS PAGE -->
@@ -884,51 +905,79 @@
     </div>
     <!-- Monthly comparison -->
     <div style="padding:0 14px 4px">
-      <div class="section-title" style="padding:0 0 10px">This Month vs Last Month</div>
-      <div id="rpt-month-compare"></div>
+      <div onclick="toggleAdmSection('rpt-month-compare','rpt-compare-toggle')" style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;margin-bottom:6px">
+        <div class="section-title" style="padding:0">This Month vs Last Month</div>
+        <span id="rpt-compare-toggle" style="font-size:22px;font-weight:900;color:#fff;line-height:1;width:38px;height:38px;display:flex;align-items:center;justify-content:center;background:var(--accent);border-radius:10px;flex-shrink:0">+</span>
+      </div>
+      <div id="rpt-month-compare" style="display:none"></div>
     </div>
     <!-- Revenue trend chart -->
     <div style="padding:0 14px">
-      <div class="section-title" style="padding:0 0 10px">Revenue Trend (Last 7 Days)</div>
-      <div class="trend-bar-wrap" id="trend-chart"></div>
-      <div style="display:flex;justify-content:space-between;padding:0 2px;margin-bottom:14px" id="trend-labels"></div>
+      <div onclick="toggleAdmSection('rpt-trend-body','rpt-trend-toggle')" style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;margin-bottom:6px">
+        <div class="section-title" style="padding:0">Revenue Trend (Last 7 Days)</div>
+        <span id="rpt-trend-toggle" style="font-size:22px;font-weight:900;color:#fff;line-height:1;width:38px;height:38px;display:flex;align-items:center;justify-content:center;background:var(--accent);border-radius:10px;flex-shrink:0">+</span>
+      </div>
+      <div id="rpt-trend-body" style="display:none">
+        <div class="trend-bar-wrap" id="trend-chart"></div>
+        <div style="display:flex;justify-content:space-between;padding:0 2px;margin-bottom:14px" id="trend-labels"></div>
+      </div>
     </div>
     <!-- Revenue by ad type -->
     <div style="padding:0 14px 6px">
-      <div class="section-title" style="padding:0 0 12px">Revenue by Ad Type</div>
-      <div id="rpt-adtype"></div>
+      <div onclick="toggleAdmSection('rpt-adtype','rpt-adtype-toggle')" style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;margin-bottom:6px">
+        <div class="section-title" style="padding:0">Revenue by Ad Type</div>
+        <span id="rpt-adtype-toggle" style="font-size:22px;font-weight:900;color:#fff;line-height:1;width:38px;height:38px;display:flex;align-items:center;justify-content:center;background:var(--accent);border-radius:10px;flex-shrink:0">+</span>
+      </div>
+      <div id="rpt-adtype" style="display:none"></div>
     </div>
+    <!-- Team Performance -->
     <div style="padding:0 14px 6px">
-      <div class="section-title" style="padding:0 0 12px">Team Performance</div>
-      <div id="rpt-members"></div>
+      <div onclick="toggleAdmSection('rpt-members','rpt-members-toggle')" style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;margin-bottom:6px">
+        <div class="section-title" style="padding:0">Team Performance</div>
+        <span id="rpt-members-toggle" style="font-size:22px;font-weight:900;color:#fff;line-height:1;width:38px;height:38px;display:flex;align-items:center;justify-content:center;background:var(--accent);border-radius:10px;flex-shrink:0">+</span>
+      </div>
+      <div id="rpt-members" style="display:none"></div>
     </div>
     <!-- Top clients -->
     <div style="padding:0 14px 6px">
-      <div class="section-title" style="padding:0 0 12px">Top Clients</div>
-      <div id="rpt-top-clients"></div>
+      <div onclick="toggleAdmSection('rpt-top-clients','rpt-clients-toggle')" style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;margin-bottom:6px">
+        <div class="section-title" style="padding:0">Top Clients</div>
+        <span id="rpt-clients-toggle" style="font-size:22px;font-weight:900;color:#fff;line-height:1;width:38px;height:38px;display:flex;align-items:center;justify-content:center;background:var(--accent);border-radius:10px;flex-shrink:0">+</span>
+      </div>
+      <div id="rpt-top-clients" style="display:none"></div>
     </div>
+    <!-- Campaign Renewals -->
     <div style="padding:0 14px 6px">
-      <div class="section-title" style="padding:0 0 12px">Campaign Renewals</div>
-      <div style="background:var(--card);border:1px solid var(--border);border-radius:18px;padding:18px 20px;display:flex;gap:0">
-        <div style="flex:1;text-align:center">
-          <div style="font-size:28px;font-weight:800;color:var(--green)" id="rpt-renew-yes">0</div>
-          <div style="font-size:12px;color:var(--muted);font-weight:600;margin-top:4px">&#9989; Renewing</div>
-        </div>
-        <div style="width:1px;background:var(--border);margin:0 8px"></div>
-        <div style="flex:1;text-align:center">
-          <div style="font-size:28px;font-weight:800;color:var(--red)" id="rpt-renew-no">0</div>
-          <div style="font-size:12px;color:var(--muted);font-weight:600;margin-top:4px">&#9940; Not Renewing</div>
-        </div>
-        <div style="width:1px;background:var(--border);margin:0 8px"></div>
-        <div style="flex:1;text-align:center">
-          <div style="font-size:28px;font-weight:800;color:var(--yellow)" id="rpt-renew-pending">0</div>
-          <div style="font-size:12px;color:var(--muted);font-weight:600;margin-top:4px">&#128336; Pending</div>
+      <div onclick="toggleAdmSection('rpt-renewals-body','rpt-renewals-toggle')" style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;margin-bottom:6px">
+        <div class="section-title" style="padding:0">Campaign Renewals</div>
+        <span id="rpt-renewals-toggle" style="font-size:22px;font-weight:900;color:#fff;line-height:1;width:38px;height:38px;display:flex;align-items:center;justify-content:center;background:var(--accent);border-radius:10px;flex-shrink:0">+</span>
+      </div>
+      <div id="rpt-renewals-body" style="display:none">
+        <div style="background:var(--card);border:1px solid var(--border);border-radius:18px;padding:18px 20px;display:flex;gap:0">
+          <div style="flex:1;text-align:center">
+            <div style="font-size:28px;font-weight:800;color:var(--green)" id="rpt-renew-yes">0</div>
+            <div style="font-size:12px;color:var(--muted);font-weight:600;margin-top:4px">&#9989; Renewing</div>
+          </div>
+          <div style="width:1px;background:var(--border);margin:0 8px"></div>
+          <div style="flex:1;text-align:center">
+            <div style="font-size:28px;font-weight:800;color:var(--red)" id="rpt-renew-no">0</div>
+            <div style="font-size:12px;color:var(--muted);font-weight:600;margin-top:4px">&#9940; Not Renewing</div>
+          </div>
+          <div style="width:1px;background:var(--border);margin:0 8px"></div>
+          <div style="flex:1;text-align:center">
+            <div style="font-size:28px;font-weight:800;color:var(--yellow)" id="rpt-renew-pending">0</div>
+            <div style="font-size:12px;color:var(--muted);font-weight:600;margin-top:4px">&#128336; Pending</div>
+          </div>
         </div>
       </div>
     </div>
+    <!-- Transactions -->
     <div style="padding:0 14px 6px">
-      <div class="section-title" style="padding:16px 0 12px">Transactions</div>
-      <div id="rpt-tx-list" style="display:flex;flex-direction:column;gap:10px"></div>
+      <div onclick="toggleAdmSection('rpt-tx-list','rpt-tx-toggle')" style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;margin-bottom:6px">
+        <div class="section-title" style="padding:0">Transactions</div>
+        <span id="rpt-tx-toggle" style="font-size:22px;font-weight:900;color:#fff;line-height:1;width:38px;height:38px;display:flex;align-items:center;justify-content:center;background:var(--accent);border-radius:10px;flex-shrink:0">+</span>
+      </div>
+      <div id="rpt-tx-list" style="display:none;flex-direction:column;gap:10px"></div>
     </div>
     <div style="height:100px"></div>
   </div>
@@ -2091,12 +2140,13 @@ function renderAdmin() {
   }).join('');
 }
 function switchToFeed() { showTab('feed'); }
+const FLEX_SECTIONS = ['adm-tx-list','rpt-tx-list'];
 function toggleAdmSection(bodyId, toggleId) {
   var body   = document.getElementById(bodyId);
   var toggle = document.getElementById(toggleId);
   if (!body || !toggle) return;
   var open = body.style.display === 'none' || body.style.display === '';
-  body.style.display  = open ? (bodyId === 'adm-tx-list' ? 'flex' : 'block') : 'none';
+  body.style.display  = open ? (FLEX_SECTIONS.includes(bodyId) ? 'flex' : 'block') : 'none';
   toggle.textContent  = open ? '\u2212' : '+';
 }
 
